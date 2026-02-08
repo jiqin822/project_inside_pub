@@ -1,0 +1,59 @@
+# DigitalOcean App Platform spec (monorepo).
+# One app, two components: frontend (static) + backend (Python service).
+# See: https://docs.digitalocean.com/products/app-platform/how-to/deploy-from-monorepo/
+
+name: project-inside
+
+static_sites:
+  - name: web
+    source_dir: mobile
+    build_command: npm run build
+    output_dir: dist
+    environment_slug: node-js
+    index_document: index.html
+    catchall_document: index.html
+    routes:
+      - path: /
+    # Build-time: frontend uses this for API calls. Override in DO dashboard if your app URL differs.
+    envs:
+      - key: VITE_API_BASE_URL
+        value: https://project-inside-c6bdb.ondigitalocean.app
+
+# Backend API: same app, separate component. Add a Postgres DB and Redis in DO,
+# then set env vars (DATABASE_URL, REDIS_URL, JWT_SECRET, etc.) on this component.
+services:
+  - name: api
+    source_dir: backend
+    # CPU-only PyTorch first (saves ~2GB vs CUDA), then build tools, then full deps.
+    # NeMo and SpeechBrain are required; avoid pip cache to reduce image size.
+    build_command: >-
+      PIP_NO_CACHE_DIR=1 pip install torch "torchaudio>=2.0.0,<2.9.0" --index-url https://download.pytorch.org/whl/cpu
+      && PIP_NO_CACHE_DIR=1 pip install "Cython>=3.0.0" packaging
+      && PIP_NO_BUILD_ISOLATION=1 PIP_NO_CACHE_DIR=1 pip install -r requirements-full.txt
+      && PIP_NO_BUILD_ISOLATION=1 PIP_NO_CACHE_DIR=1 pip install -r requirements-nemo.txt
+      && python - <<'PY'
+      import os
+      import shutil
+
+      base = "/workspace/backend/.heroku/python/lib/python3.12/site-packages"
+      if os.path.isdir(base):
+          drop_dirs = {"__pycache__", "tests", "test", "testing", "benchmarks", "docs"}
+          for root, dirs, files in os.walk(base, topdown=True):
+              dirs[:] = [d for d in dirs if d not in drop_dirs]
+              for d in list(dirs):
+                  if d in drop_dirs:
+                      shutil.rmtree(os.path.join(root, d), ignore_errors=True)
+              for name in files:
+                  if name.endswith((".pyc", ".pyo")):
+                      try:
+                          os.remove(os.path.join(root, name))
+                      except OSError:
+                          pass
+      PY
+    run_command: uvicorn app.main:app --host 0.0.0.0 --port 8080
+    environment_slug: python
+    http_port: 8080
+    instance_count: 1
+    routes:
+      - path: /v1
+    preserve_path_prefix: true

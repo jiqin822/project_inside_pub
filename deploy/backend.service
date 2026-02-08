@@ -1,0 +1,15 @@
+[Unit]
+Description=Project Inside FastAPI backend
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/project_inside/backend
+EnvironmentFile=/etc/project_inside/backend.env
+ExecStart=/opt/project_inside/backend/.venv/bin/python -m uvicorn app.main:app --host 0.0.0.0 --port 8000
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

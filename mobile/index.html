@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover" />
+    <title>Inside</title>
+    <link rel="icon" type="image/png" href="/icon.png" />
+    <link rel="apple-touch-icon" href="/icon.png" />
+    <script src="https://cdn.tailwindcss.com?plugins=forms,typography"></script>
+    <script>
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            colors: {
+              primary: "#5465FF",
+              "background-light": "#FFFFFF",
+              "background-dark": "#0F172A",
+              "grid-light": "#E5E7EB",
+              "grid-dark": "#1E293B",
+              "accent-blue": "#3B82F6",
+              "accent-pink": "#EC4899",
+              "accent-yellow": "#EAB308",
+              "card-border": "#111827",
+              "spk-blue": "#5D5FEF",
+              "spk-orange": "#FF6B6B",
+              "spk-green": "#2D6A4F",
+              "spk-purple": "#9B51E0",
+              "spk-yellow": "#F2C94C",
+            },
+            fontFamily: {
+              display: ["Archivo Black", "sans-serif"],
+              mono: ["JetBrains Mono", "monospace"],
+              sans: ["Inter", "sans-serif"],
+            },
+            backgroundImage: {
+              "grid-pattern-light": "linear-gradient(to right, #E5E7EB 1px, transparent 1px), linear-gradient(to bottom, #E5E7EB 1px, transparent 1px)",
+              "grid-pattern-dark": "linear-gradient(to right, #1E293B 1px, transparent 1px), linear-gradient(to bottom, #1E293B 1px, transparent 1px)",
+            },
+          },
+        },
+      };
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Archivo+Black&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+    <style>
+      @keyframes fade-in {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-fade-in {
+        animation: fade-in 0.5s ease-out forwards;
+      }
+      @keyframes slide-in-down {
+        from { opacity: 0; transform: translateY(-20px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+      .animate-slide-in-down {
+        animation: slide-in-down 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      }
+      @keyframes slideInRight {
+        from { opacity: 0; transform: translateX(100%); }
+        to { opacity: 1; transform: translateX(0); }
+      }
+      /* Range Slider Styling */
+      input[type="range"].slider {
+        -webkit-appearance: none;
+        appearance: none;
+        outline: none;
+      }
+      input[type="range"].slider::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 20px;
+        height: 20px;
+        background: #475569;
+        border: 2px solid #1e293b;
+        border-radius: 50%;
+        cursor: grab;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: transform 0.1s ease;
+      }
+      input[type="range"].slider::-webkit-slider-thumb:active {
+        cursor: grabbing;
+        transform: scale(1.2);
+      }
+      input[type="range"].slider::-moz-range-thumb {
+        width: 20px;
+        height: 20px;
+        background: #475569;
+        border: 2px solid #1e293b;
+        border-radius: 50%;
+        cursor: grab;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: transform 0.1s ease;
+      }
+      input[type="range"].slider::-moz-range-thumb:active {
+        cursor: grabbing;
+        transform: scale(1.2);
+      }
+      input[type="range"].slider::-webkit-slider-runnable-track {
+        height: 12px;
+        border-radius: 6px;
+      }
+      input[type="range"].slider::-moz-range-track {
+        height: 12px;
+        border-radius: 6px;
+      }
+      /* Hide scrollbar for Chrome, Safari and Opera */
+      .no-scrollbar::-webkit-scrollbar {
+          display: none;
+      }
+      /* Hide scrollbar for IE, Edge and Firefox */
+      .no-scrollbar {
+          -ms-overflow-style: none;  /* IE and Edge */
+          scrollbar-width: none;  /* Firefox */
+      }
+      /* Prevent scrolling on body and html */
+      html, body {
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+          position: fixed;
+          margin: 0;
+          padding: 0;
+      }
+      #root {
+          height: 100%;
+          width: 100%;
+          overflow: hidden;
+      }
+      /* Use dvh for modern iOS support */
+      @supports (height: 100dvh) {
+          #root {
+              height: 100dvh;
+          }
+      }
+      /* Safe Area Support for iOS/Android */
+      :root {
+          --sat: env(safe-area-inset-top, 0px);
+          --sar: env(safe-area-inset-right, 0px);
+          --sab: env(safe-area-inset-bottom, 0px);
+          --sal: env(safe-area-inset-left, 0px);
+      }
+      .safe-area {
+          padding-top: var(--sat);
+          padding-right: var(--sar);
+          padding-bottom: var(--sab);
+          padding-left: var(--sal);
+      }
+      .safe-area-top {
+          padding-top: var(--sat);
+      }
+      .safe-area-bottom {
+          padding-bottom: var(--sab);
+      }
+      /* App shell with safe area padding */
+      .app-shell {
+          padding-top: var(--sat);
+          padding-bottom: var(--sab);
+      }
+      /* Floor plan container - fit to viewport while preserving aspect ratio */
+      .floor-plan-container {
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          width: 100%;
+          flex: 1;
+          overflow: visible;
+          -webkit-overflow-scrolling: touch;
+          min-height: 0;
+      }
+      /* Floor plan wrapper - fills available viewport space */
+      .floor-plan-wrapper {
+          width: 100%;
+          height: 100%;
+          display: flex;
+          align-items: center;
+          justify-content: center;
+          position: relative;
+      }
+      .floor-plan {
+          width: 100%;
+          height: 100%;
+          max-width: 100%;
+          max-height: 100%;
+          aspect-ratio: 4 / 5;
+          object-fit: contain;
+      }
+      /* Love Map Data Stream schematic */
+      .love-map-bg-grid {
+          background-color: #ffffff;
+          background-image: linear-gradient(#e2e8f0 1px, transparent 1px), linear-gradient(90deg, #e2e8f0 1px, transparent 1px);
+          background-size: 32px 32px;
+          background-position: center top;
+      }
+      .love-map-node-panel {
+          background: white;
+          border: 2px solid #0f172a;
+          box-shadow: 6px 6px 0 0 #0f172a;
+      }
+      .love-map-node-panel.locked {
+          border-style: dashed;
+          border-color: #94a3b8;
+          box-shadow: none;
+      }
+      .love-map-schematic-card {
+          background: white;
+          border: 1px solid #94a3b8;
+          box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+          position: relative;
+      }
+      .love-map-schematic-card.left::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          right: -6px;
+          width: 4px;
+          height: 4px;
+          background: #0f172a;
+          border-radius: 9999px;
+          transform: translateY(-50%);
+      }
+      .love-map-schematic-card.right::before {
+          content: '';
+          position: absolute;
+          top: 50%;
+          left: -6px;
+          width: 4px;
+          height: 4px;
+          background: #0f172a;
+          border-radius: 9999px;
+          transform: translateY(-50%);
+      }
+      .love-map-packet-animation {
+          offset-path: path('M20 0 L20 40 L28 48 L28 80 L12 96 L12 140 L20 148 L20 200');
+          animation: love-map-travel 2s linear infinite;
+      }
+      @keyframes love-map-travel {
+          0% { offset-distance: 0%; opacity: 0; }
+          10% { opacity: 1; }
+          90% { opacity: 1; }
+          100% { offset-distance: 100%; opacity: 0; }
+      }
+      .love-map-progress-ring {
+          transform: rotate(-90deg);
+      }
+      .scrollable-stream {
+          scrollbar-width: none;
+          -ms-overflow-style: none;
+      }
+      .scrollable-stream::-webkit-scrollbar {
+          display: none;
+      }
+      /* Live Coach / Dialogue Deck */
+      .grid-bg {
+        background-size: 20px 20px;
+      }
+      .neo-brutal-shadow {
+        box-shadow: 4px 4px 0px 0px rgba(0,0,0,1);
+      }
+      .neo-brutal-shadow-sm {
+        box-shadow: 2px 2px 0px 0px rgba(0,0,0,1);
+      }
+      .dark .neo-brutal-shadow {
+        box-shadow: 4px 4px 0px 0px rgba(255,255,255,0.2);
+      }
+      .dark .neo-brutal-shadow-sm {
+        box-shadow: 2px 2px 0px 0px rgba(255,255,255,0.2);
+      }
+    </style>
+  <script type="importmap">
+{
+  "imports": {
+    "@google/genai": "https://esm.sh/@google/genai@^1.38.0",
+    "lucide-react": "https://esm.sh/lucide-react@^0.563.0",
+    "react/": "https://esm.sh/react@^19.2.3/",
+    "react": "https://esm.sh/react@^19.2.3",
+    "react-dom/": "https://esm.sh/react-dom@^19.2.3/",
+    "react-markdown": "https://esm.sh/react-markdown@10?bundle"
+  }
+}
+</script>
+</head>
+  <body class="bg-slate-200 m-0 p-0 overflow-hidden" style="height: 100vh; width: 100vw; position: fixed;">
+    <div id="root" class="w-full h-full" style="height: 100vh; width: 100vw; overflow: hidden;"></div>
+  <script type="module" src="/index.tsx"></script>
+</body>
+</html>

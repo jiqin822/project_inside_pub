@@ -1,0 +1,29 @@
+# Slim requirements for DigitalOcean App Platform (fits export disk).
+# Omits SpeechBrain + torch and NeMo; app runs with STT/voice features degraded.
+# For full features use requirements-full.txt (e.g. Docker or larger build env).
+
+# Production dependencies
+anyio>=4.8.0,<5.0.0
+fastapi>=0.115.0,<0.129.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0
+email-validator>=2.0.0
+sqlalchemy==2.0.23
+greenlet>=2.0.0
+alembic==1.12.1
+asyncpg==0.29.0
+redis[hiredis]==5.0.1
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart>=0.0.6
+websockets>=13.0
+httpx>=0.28.1,<1.0.0
+sendgrid==6.11.0
+google-cloud-speech
+numpy
+scipy
+
+google-genai>=1.0.0
+
+pytest-asyncio>=0.21.0

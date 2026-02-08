@@ -1,0 +1,14 @@
+[Unit]
+Description=Project Inside log viewer (journalctl over HTTP on port 8888)
+After=network.target
+
+[Service]
+Type=simple
+User=root
+WorkingDirectory=/opt/project_inside
+ExecStart=/usr/bin/python3 /opt/project_inside/scripts/log_viewer.py
+Restart=always
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

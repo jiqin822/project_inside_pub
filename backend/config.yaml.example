@@ -1,0 +1,24 @@
+# Example config file (YAML). Copy to config.yaml and edit.
+# Config file is master over env: any key here overrides the same env var.
+# Keys must match Settings field names (e.g. database_url, gemini_api_key).
+# Optional: set CONFIG_FILE to path to this file, or place as backend/config.yaml.
+
+# app_name: Project Inside API
+# app_version: "0.1.0"
+# debug: false
+# api_v1_prefix: "/v1"
+
+# database_url: postgresql+asyncpg://postgres:postgres@localhost:5432/project_inside
+# database_echo: false
+
+# redis_url: redis://localhost:6379/0
+# redis_queue_url: redis://localhost:6379/1
+
+# gemini_api_key: ""  # Override env if set here
+# openai_api_key: ""  # Scrapbook sticker image generation (DALL-E)
+
+# cors_origins:
+#   - "http://localhost:*"
+#   - "http://127.0.0.1:*"
+
+# nudge_rate_limit_seconds: 10

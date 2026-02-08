@@ -1,0 +1,90 @@
+[tool.poetry]
+name = "project-inside-backend"
+version = "0.1.0"
+description = "Communication + Relationship Coaching Backend"
+authors = ["Your Name <you@example.com>"]
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = ">=0.115.0,<0.129.0"
+uvicorn = {extras = ["standard"], version = ">=0.24.0"}
+pydantic = {extras = ["email"], version = "^2.5.0"}
+pydantic-settings = "^2.1.0"
+sqlalchemy = "^2.0.23"
+greenlet = "^2.0.0"
+alembic = "^1.12.1"
+asyncpg = "^0.29.0"
+redis = {extras = ["hiredis"], version = "^5.0.1"}
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+python-multipart = "^0.0.6"
+websockets = "^13.0"
+email-validator = "^2.3.0"
+bcrypt = "^5.0.0"
+httpx = ">=0.28.1,<1.0.0"
+numpy = "^2.4.1"
+google-cloud-speech = "^2.36.0"
+scipy = "^1.17.0"
+# Speaker embedding (ECAPA-TDNN via SpeechBrain); no LLVM required
+# torchaudio 2.9+ removed list_audio_backends() which SpeechBrain uses
+torch = ">=2.0.0"
+torchaudio = ">=2.0.0,<2.9.0"
+speechbrain = ">=1.0.0"
+# pyannote.audio requires >=0.30; SpeechBrain use_auth_token was removed in huggingface_hub 1.0 so keep <1.0
+huggingface-hub = ">=0.30.0,<1.0.0"
+# Backend for loading WAV/audio (removes "could not find any working torchaudio backend" warning)
+soundfile = ">=0.12.0"
+# Gemini (Love Map quiz + activity recommendations); use google-genai (not deprecated google-generativeai)
+google-genai = "^1.0.0"
+# OpenAI (scrapbook sticker image generation via GPT Image)
+openai = ">=1.0"
+# Resize sticker images to 100x100 (PIL)
+pillow = "^10.0.0"
+# Push notifications (FCM)
+firebase-admin = "^6.0.0"
+# Config file (YAML) for pushable settings
+pyyaml = "^6.0.0"
+
+# Optional: Diart + pyannote (requires Linux/GPU for onnxruntime-gpu). Install with: poetry install --with diart
+[tool.poetry.group.diart]
+optional = true
+
+[tool.poetry.group.diart.dependencies]
+diart = "*"
+pyannote-audio = "<3.1"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+pytest-asyncio = "^0.21.1"
+pytest-cov = "^4.1.0"
+ruff = "^0.1.6"
+black = "^23.11.0"
+aiosqlite = "^0.19.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.black]
+line-length = 100
+target-version = ['py311']
+include = '\.pyi?$'
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+select = ["E", "F", "I", "N", "W", "UP"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+asyncio_mode = "auto"
+pythonpath = ["."]
+norecursedirs = ["app/tests", ".git", "__pycache__", "*.egg"]
+markers = [
+    "integration: marks tests that need a real DB (deselect with '-m \"not integration\"')",
+]

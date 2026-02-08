@@ -1,0 +1,58 @@
+# Add this to your DigitalOcean app spec so the web (frontend) component is deployed.
+#
+# Your live spec has:
+#   - Custom domain: project-inside.seerbyse.ai
+#   - Backend at path: /project-inside-backend (ingress rule)
+#   - No static_sites (web) component
+#
+# 1) Add the static_sites block (below) at the top level. Do NOT add "routes" to the component
+#    when you use ingress - routing is mutually exclusive (define paths only in ingress.rules).
+# 2) In ingress.rules, add a rule for the web component at / (see ingress section below).
+# 3) On the backend service, set CORS_ORIGINS to include your app URL:
+#      ["https://project-inside.seerbyse.ai"]
+#    and set VITE_API_BASE_URL for the web to:
+#      https://project-inside.seerbyse.ai/project-inside-backend
+#    (no trailing slash) so the frontend calls .../project-inside-backend/v1/...
+#
+# ---
+# PASTE THIS: static_sites block (add at same level as "services:")
+# ---
+
+static_sites:
+  - name: web
+    environment_slug: node-js
+    github:
+      repo: jiqin822/project_inside
+      branch: main
+      deploy_on_push: true
+    source_dir: mobile
+    build_command: npm run build
+    output_dir: dist
+    index_document: index.html
+    catchall_document: index.html
+    # Do NOT add "routes" here when using ingress - routing is defined only in ingress.rules
+    envs:
+      - key: VITE_API_BASE_URL
+        scope: BUILD_TIME
+        value: https://project-inside.seerbyse.ai/project-inside-backend
+
+# ---
+# PASTE THIS: add a second rule under ingress.rules so the web app is at /
+# (Keep your existing rule for project-inside-backend.)
+# ---
+#
+# Correct ingress: two rules with DIFFERENT path prefixes (avoids "path prefix / already in use").
+# Order: list backend first (more specific), then web at / (catch-all).
+#
+# ingress:
+#   rules:
+#   - component:
+#       name: project-inside-backend
+#     match:
+#       path:
+#         prefix: /project-inside-backend
+#   - component:
+#       name: web
+#     match:
+#       path:
+#         prefix: /

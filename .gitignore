@@ -1,0 +1,123 @@
+# Environment variables
+.env
+.env.local
+.env.production
+mobile/.env.production
+# GCP service account keys (do not commit)
+*-bbaed895a705.json
+project-inside-*.json
+.env.*.local
+*.env
+
+# Python
+backend/poetry.lock
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+.pytest_cache/
+.coverage
+htmlcov/
+.tox/
+.venv
+.venv312/
+venv/
+ENV/
+env/
+
+# Node.js
+node_modules/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pnpm-debug.log*
+dist/
+dist-ssr/
+*.local
+
+# Flutter/Dart
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+.pub/
+build/
+**/doc/api/
+**/ios/Flutter/.last_build_id
+*.freezed.dart
+*.g.dart
+*.gen.dart
+
+# IDEs
+.idea/
+.vscode/
+*.iml
+*.ipr
+*.iws
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Database
+*.db
+*.sqlite
+*.sqlite3
+
+# Archives
+*.zip
+*.tar.gz
+*.rar
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+
+# Audio files (if they're generated/temporary)
+*.wav
+*.mp3
+*.ogg
+
+# Excluded from repo (kept locally only)
+voiceprint-api/
+inside/
+
+# Other
+.metadata
+.swiftpm/
+migrate_working_dir/
+app.*.symbols
+app.*.map.json

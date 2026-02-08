@@ -1,0 +1,8 @@
+{
+  "name": "Inside - Relationship Coach",
+  "description": "A comprehensive relationship coaching platform featuring real-time conversation analysis, an AI therapist mediator, and gamified couple interactions.",
+  "requestFramePermissions": [
+    "microphone",
+    "camera"
+  ]
+}

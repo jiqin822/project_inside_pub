@@ -1,0 +1,48 @@
+# Production dependencies
+# FastAPI/httpx/websockets require anyio 4.x; google-genai requires anyio>=4.8 — pin to avoid conflict
+anyio>=4.8.0,<5.0.0
+fastapi>=0.115.0,<0.129.0
+uvicorn[standard]>=0.24.0
+pydantic>=2.5.0,<3.0.0
+pydantic-settings>=2.1.0
+email-validator>=2.0.0
+sqlalchemy==2.0.23
+greenlet>=2.0.0
+alembic==1.12.1
+asyncpg==0.29.0
+redis[hiredis]==5.0.1
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-multipart>=0.0.6
+websockets>=13.0
+httpx>=0.28.1,<1.0.0
+sendgrid==6.11.0
+google-cloud-speech
+numpy
+scipy
+diart
+ffmpeg < 4.4
+portaudio == 19.6.X
+libsndfile >= 1.2.2
+
+# Gemini (Love Map quiz + activity recommendations) — must be installed for activity LLM
+google-genai>=1.0.0
+
+# Speaker embedding (ECAPA-TDNN via SpeechBrain)
+# torch/torchaudio: not listed here so DO build uses CPU-only from build command; locally pip installs via SpeechBrain/NeMo deps.
+# pyannote.audio requires huggingface-hub>=0.30; keep <1.0 for SpeechBrain use_auth_token compat.
+huggingface-hub>=0.30.0,<1.0.0
+speechbrain>=1.0.0
+soundfile>=0.12.0
+
+# NeMo Sortformer diarization (optional) lives in requirements-nemo.txt
+
+# Test runner (required for pytest async tests)
+pytest-asyncio>=0.21.0
+
+# Development dependencies (optional, uncomment if needed)
+# pytest==7.4.3
+# pytest-cov==4.1.0
+# ruff==0.1.6
+# black==23.11.0
+# httpx==0.25.2

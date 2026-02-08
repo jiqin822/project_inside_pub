@@ -1,0 +1,5 @@
+# Bootstrap dependencies for DigitalOcean buildpack.
+# The buildpack installs requirements.txt before build_command, so keep only
+# build tools here. Full dependencies live in requirements-full.txt.
+Cython>=3.0.0
+packaging

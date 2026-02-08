@@ -1,0 +1,178 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "WebSocket Messages",
+  "description": "Schema definitions for WebSocket messages",
+  "definitions": {
+    "NudgeMessage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["nudge"]
+        },
+        "nudge_type": {
+          "type": "string",
+          "description": "Type of nudge: reminder, suggestion, alert, etc."
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "message": {
+              "type": "string"
+            },
+            "priority": {
+              "type": "string",
+              "enum": ["low", "medium", "high"]
+            },
+            "action_url": {
+              "type": "string",
+              "format": "uri"
+            }
+          },
+          "required": ["message"]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["type", "nudge_type", "payload"]
+    },
+    "PokeMessage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["poke"]
+        },
+        "payload": {
+          "type": "object",
+          "properties": {
+            "from_user_id": {
+              "type": "string"
+            },
+            "message": {
+              "type": "string"
+            }
+          },
+          "required": ["from_user_id"]
+        },
+        "timestamp": {
+          "type": "string",
+          "format": "date-time"
+        }
+      },
+      "required": ["type", "payload"]
+    },
+    "AckMessage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["ack"]
+        },
+        "message": {
+          "type": "object"
+        }
+      },
+      "required": ["type"]
+    },
+    "ErrorMessage": {
+      "type": "object",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["error"]
+        },
+        "error": {
+          "type": "string"
+        },
+        "code": {
+          "type": "string"
+        }
+      },
+      "required": ["type", "error"]
+    },
+    "SttTranscriptMessage": {
+      "type": "object",
+      "description": "Server→client: transcript text (and optional speaker) for a segment. Sent immediately for final segments with segment_id; speaker may be resolved later via stt.speaker_resolved.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["stt.transcript"]
+        },
+        "text": { "type": "string" },
+        "speaker_label": { "type": "string" },
+        "speaker_tag": { "type": "integer" },
+        "is_final": { "type": "boolean" },
+        "segment_id": {
+          "type": "integer",
+          "description": "Per-session monotonic identifier. Present only for final segments. Client uses this to match stt.speaker_resolved updates."
+        },
+        "start_ms": { "type": "integer" },
+        "end_ms": { "type": "integer" },
+        "confidence": { "type": "number" },
+        "audio_segment_base64": { "type": "string" },
+        "best_score_pct": { "type": "number" },
+        "second_score_pct": { "type": "number" },
+        "score_margin_pct": { "type": "number" },
+        "best_user_suffix": { "type": "string" },
+        "second_user_suffix": { "type": "string" },
+        "speaker_source": { "type": "string", "enum": ["google", "nemo", "voice_id", "none"], "description": "NeMo debug: who assigned speaker (google diarization, nemo fallback, voice_id = embedding only, or none)." },
+        "nemo_speaker_id": { "type": ["string", "null"], "description": "NeMo debug: diarization speaker id when speaker_source is nemo." },
+        "speaker_label_before": { "type": ["string", "null"], "description": "NeMo debug: previous label when a resolution changed it." },
+        "speaker_label_after": { "type": ["string", "null"], "description": "NeMo debug: new label after resolution (equals speaker_label for resolved message)." },
+        "speaker_change_at_ms": { "type": ["integer", "null"], "description": "NeMo debug: time (ms) where speaker changed; used when word index unavailable (e.g. chirp_3)." },
+        "speaker_change_word_index": { "type": ["integer", "null"], "description": "NeMo debug: word index where speaker changed; set when word offsets available." }
+      },
+      "required": ["type", "text", "speaker_label"]
+    },
+    "SttSpeakerResolvedMessage": {
+      "type": "object",
+      "description": "Server→client: speaker identity for a segment, sent after async voice ID. May arrive out of order (e.g. segment 3 before segment 2). Client matches by segment_id only.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["stt.speaker_resolved"]
+        },
+        "segment_id": {
+          "type": "integer",
+          "description": "Same integer as in the corresponding stt.transcript (final) message. Client finds the transcript row with this segment_id and updates speaker and scores."
+        },
+        "speaker_label": { "type": "string" },
+        "best_score_pct": { "type": "number" },
+        "second_score_pct": { "type": "number" },
+        "score_margin_pct": { "type": "number" },
+        "best_user_suffix": { "type": "string" },
+        "second_user_suffix": { "type": "string" },
+        "speaker_source": { "type": "string", "enum": ["google", "nemo", "voice_id", "none"], "description": "NeMo debug: who resolved speaker (google diarization, nemo one-shot, voice_id = embedding match only, none)." },
+        "nemo_speaker_id": { "type": ["string", "null"], "description": "NeMo debug: diarization speaker id when speaker_source is nemo." },
+        "speaker_label_before": { "type": ["string", "null"], "description": "NeMo debug: previous label (e.g. Anon_N) before resolution to user_id." },
+        "speaker_label_after": { "type": ["string", "null"], "description": "NeMo debug: new label after resolution (equals speaker_label)." },
+        "speaker_change_at_ms": { "type": ["integer", "null"], "description": "NeMo debug: segment start_ms or turn boundary (ms) where change applies." },
+        "speaker_change_word_index": { "type": ["integer", "null"], "description": "NeMo debug: word index where speaker changed; null when word offsets unavailable." }
+      },
+      "required": ["type", "segment_id", "speaker_label"]
+    },
+    "SttNemoDiarSegmentsMessage": {
+      "type": "object",
+      "description": "Server→client: latest NeMo diarization segments (sliding window). Shown in STT debug popup.",
+      "properties": {
+        "type": { "type": "string", "enum": ["stt.nemo_diar_segments"] },
+        "segments": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "start_s": { "type": "number", "description": "Segment start time (seconds, absolute)." },
+              "end_s": { "type": "number", "description": "Segment end time (seconds, absolute)." },
+              "speaker_id": { "type": "string", "description": "NeMo speaker id (e.g. spk_0)." }
+            },
+            "required": ["start_s", "end_s", "speaker_id"]
+          }
+        }
+      },
+      "required": ["type", "segments"]
+    }
+  }
+}

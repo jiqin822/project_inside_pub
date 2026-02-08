@@ -1,0 +1,17 @@
+# Optional NeMo Sortformer diarization (streaming model nvidia/diar_streaming_sortformer_4spk-v2.1)
+# See: https://huggingface.co/nvidia/diar_streaming_sortformer_4spk-v2.1
+#
+# Install after main requirements:
+#   pip install -r requirements.txt -r requirements-nemo.txt
+#
+# Official NeMo install (if PyPI nemo_toolkit fails): install Cython and latest PyTorch first, then:
+#   pip install Cython packaging
+#   pip install git+https://github.com/NVIDIA/NeMo.git@main#egg=nemo_toolkit[asr]
+#
+# Note: NeMo can be large and may require compatible torch/torchaudio pins.
+
+# Pin PyYAML so pip uses a wheel (avoid "cython_sources" build error with newer setuptools).
+PyYAML>=6.0
+
+nemo_toolkit[asr]
+
